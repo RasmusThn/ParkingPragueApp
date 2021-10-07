@@ -27,10 +27,10 @@ namespace ParkingPrague
                 Console.Write("\nEnter the letter inside --> [] ");
                 menuVal = Console.ReadLine().ToUpper();
 
-                //String hourMinute = DateTime.Now.ToString("HH:mm");                
+                              
                 string now = DateTime.Now.ToString("HH:mm");
 
-                if (now.Contains("00:0"))
+                if (now.Contains("00:00"))
                 {
                     Console.WriteLine("Times up!");
                     Console.WriteLine("All vehicles will explode..");
@@ -78,7 +78,7 @@ namespace ParkingPrague
                             {
                                 Console.Clear();
                                 ParkingLotOverview();
-                                Console.WriteLine("That Vehicle is parked at spot number " + output);
+                                Console.WriteLine("\nThat Vehicle is parked at spot number " + output);
                             }
 
                             Console.ReadKey();
@@ -103,8 +103,6 @@ namespace ParkingPrague
         }
         static string CarOrMc()
         {
-            //ParkingLotOverview();
-
             Console.Write("\nIs it a Car or Mc: "); string input = Console.ReadLine().ToUpper();
             switch (input)
             {
@@ -117,17 +115,16 @@ namespace ParkingPrague
                     Console.Clear();
                     return CarOrMc();
             }
-
         }      
         static void AddToParkingSpace()
         {
             string vehicle = CarOrMc();
-            Console.Write("Enter the Regnumber: "); string regNr = Console.ReadLine().ToUpper();                   
-            
+            Console.Write("Enter the Regnumber: "); string regNr = Console.ReadLine().ToUpper();                              
             bool checkRegNr = CheckRegInput(regNr); 
             if (checkRegNr == false)
             {
                 InputError();
+                AddToParkingSpace();
             }
             regNr = AddCarOrMc(regNr, vehicle);
             bool checkSpot = CheckSpotTaken(regNr);
@@ -169,7 +166,7 @@ namespace ParkingPrague
                     {
                         bool full1 = pSpots[i].Contains("MC");
                         bool full2 = pSpots[i].Contains("CAR");
-
+                        
                         if (full1 && full2)
                         {
                             Console.Clear();
@@ -201,10 +198,8 @@ namespace ParkingPrague
         {
             const int column = 6;
             int x = 1;
-
             for (int i = 1; i < pSpots.Length; i++)
             {
-
                 if (x >= column && x % column == 0)
                 {
                     Console.WriteLine();
@@ -241,9 +236,6 @@ namespace ParkingPrague
                     x++;
                 }
             }
-
-
-
         }
         static void MoveVehicle()
         {
@@ -271,8 +263,6 @@ namespace ParkingPrague
                     Console.ReadKey();
                     MoveVehicle();
                 }
-
-
                 for (int i = 1; i < pSpots.Length; i++)//Removes vehicle from current spot
                 {
                     if (pSpots[i] != null)
@@ -318,7 +308,7 @@ namespace ParkingPrague
                 }
                 else if (pSpots[moveTo] != null && pSpots[moveTo].Contains("-MC") && pSpots[moveTo].Length < 14 && pSpots[moveTo].Length > 5 && !regNr.Contains("-CAR"))
                 {
-                    //pSpots[moveTo] += string.Join('|', regNr);
+                    //pSpots[moveTo] = string.Join('|', regNr);
                     pSpots[moveTo] += '|' + regNr;
                     Console.Clear();
                     Console.WriteLine(regNr + " is now moved to spot nr: " + moveTo);
@@ -339,6 +329,7 @@ namespace ParkingPrague
             if (checkRegNr == false)
             {
                 InputError();
+                ReturnVehicle();
             }
             int counter = 0;
             int regSpotNr = 0;
@@ -405,6 +396,7 @@ namespace ParkingPrague
             if (checkRegNr == false)
             {
                 InputError();
+                SearchForMove();
             }
             regNr = AddCarOrMc(regNr, vehicle);
             if (regNr == null)
@@ -438,12 +430,9 @@ namespace ParkingPrague
         }
         static int Search()
         {
-            Console.Write("Enter the Regnumber: "); string regNr = Console.ReadLine().ToUpper();
-            bool checkRegNr = CheckRegInput(regNr);
-            if (checkRegNr == false)
-            {
-                InputError();
-            }
+            ParkingLotOverview();
+            Console.Write("\nEnter the Regnumber: "); string regNr = Console.ReadLine().ToUpper();
+            
             for (int i = 1; i < pSpots.Length; i++)
             {
                 if (pSpots[i] != null)
@@ -478,8 +467,7 @@ namespace ParkingPrague
                         }
                         Console.WriteLine("\tYou will have to pay {0} Koruna at checkout.", sum);
                         Console.WriteLine("\n\t\tThanks and Welcome back again!");
-                        Console.ResetColor();
-                        Console.ReadLine();
+                        Console.ResetColor();                       
                         parkedTime[i] = null;
                         break;
 
@@ -568,8 +556,7 @@ namespace ParkingPrague
             Console.WriteLine("Wrong input, Please don't use any blankspaces or anything like \"#!?(/%-*'\" ");
             Console.WriteLine("Press any key to try again!");
             Console.ReadKey();
-            Console.Clear();
-            AddToParkingSpace();
+            Console.Clear();          
         }
         static void Ticket(string regNr, int i)
         {
@@ -577,7 +564,7 @@ namespace ParkingPrague
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("\n\n\t\t\t\tTHIS IS YOUR P-TICKET");   
             Console.WriteLine("\t\tYou parked {0} at spot nr {1} at the time {2} ",regNr,i, DateTime.Now.ToString("HH:mm"));
-            Console.WriteLine("\tBe sure to check it out before 23:59 or it will be moved and extra charged");
+            Console.WriteLine("\tBe sure to check it out before 23:59;59 or it will be moved and extra charged");
             Random rnd = new Random();
             int randomNumber = rnd.Next(100, 100000);
             Console.Write("This is your personal number: ");
@@ -587,8 +574,7 @@ namespace ParkingPrague
             Console.Write(" show it to the valet for retrival of your vehicle");
             Console.ResetColor();
             Console.WriteLine("\n\nPress any key to print out ticket..");
-            Console.ReadKey();
-            
+            Console.ReadKey();         
         }
     }
 }
